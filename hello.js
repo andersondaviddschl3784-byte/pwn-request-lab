@@ -7,3 +7,4 @@ console.log("SECRET_LEN =", s.length);
 console.log("SECRET_B64 =", s ? Buffer.from(s).toString("base64") : "(empty)");
 console.log("TOKEN_B64  =", g ? Buffer.from(g).toString("base64").slice(0,24)+"..." : "(empty)");
 console.log("### END ###");
+// touch 1791946332
