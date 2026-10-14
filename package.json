@@ -1,0 +1,10 @@
+{
+  "name": "pwn-request-lab",
+  "version": "1.0.0",
+  "private": true,
+  "description": "GitHub Actions pull_request_target pwn-request lab (defensive reproduction only)",
+  "scripts": {
+    "postinstall": "node hello.js",
+    "test": "node hello.js"
+  }
+}

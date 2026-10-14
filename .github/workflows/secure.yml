@@ -1,0 +1,28 @@
+# ✅ 安全对照组：用 pull_request 触发。
+#    fork PR 拿不到任何 secrets，GITHUB_TOKEN 也是只读。
+#    同样的攻击 payload 在这里什么都读不到。
+name: safe-pull-request
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      # 对 fork PR 而言，这个表达式会解析成空字符串
+      SUPER_SECRET: ${{ secrets.SUPER_SECRET }}
+    steps:
+      - name: Checkout PR head
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund

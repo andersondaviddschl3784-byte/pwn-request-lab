@@ -1,0 +1,35 @@
+# ⚠️ 故意写坏的 workflow —— 仅用于 pwn-request 实验室复现，切勿用于任何真实仓库。
+#
+# 漏洞成因（四条同时成立）：
+#   1) on: pull_request_target      —— 运行上下文是 base 仓库，可访问 secrets
+#   2) actions/checkout ref: head   —— 把外部 PR 的代码拉下来
+#   3) npm install                  —— 执行了 PR 里可控的 postinstall 脚本
+#   4) env 里有 SUPER_SECRET        —— 于是外部代码能直接读到密钥
+name: vuln-pull-request-target
+
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      # 触发事件是 pull_request_target —— 所以即使是 fork PR，这个 secret 也会被注入
+      SUPER_SECRET: ${{ secrets.SUPER_SECRET }}
+    steps:
+      - name: Checkout PR head (危险点：拉取外部 PR 代码)
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies (危险点：执行 PR 可控的生命周期脚本)
+        run: npm install --no-audit --no-fund
